@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nexora — AI Skill Gap Finder</title>
+<style>
+  :root{
+    --purple:#3525cd;
+    --violet:#712ae2;
+    --mint:#6ffbbe;
+    --mint-dark:#4edea3;
+    --ink:#151b2a;
+    --body:#464555;
+    --bg-lav:#f1f3ff;
+    --bg-lav2:#e2dfff;
+    --bg-lav3:#e9edff;
+    --page:#fbfbff;
+    --white:#ffffff;
+    --radius-lg:16px;
+    --radius-md:12px;
+    --radius-sm:8px;
+    --font-head:'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+    --font-body:'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:var(--page);
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;}
+  a{text-decoration:none;color:inherit;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding-left:16px;padding-right:16px;}
+  .eyebrow{
+    font-family:var(--font-body);
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:.44px;
+    text-transform:uppercase;
+    color:var(--purple);
+    background:var(--bg-lav2);
+    display:inline-flex;
+    padding:4px 14px;
+    border-radius:999px;
+    margin:0 auto 16px;
+  }
+  h2.section-title{
+    font-family:var(--font-head);
+    font-weight:800;
+    font-size:26px;
+    line-height:1.2;
+    letter-spacing:-0.4px;
+    text-align:center;
+    max-width:520px;
+    margin:0 auto 12px;
+  }
+  p.section-sub{
+    font-family:var(--font-body);
+    color:var(--body);
+    font-size:15px;
+    line-height:1.55;
+    text-align:center;
+    max-width:520px;
+    margin:0 auto 32px;
+  }
+  section{padding:56px 0;}
+
+  /* ---------- HEADER ---------- */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(249,249,255,0.9);
+    backdrop-filter:blur(12px);
+    box-shadow:0 1px 8px rgba(0,0,0,.04);
+  }
+  header.site .inner{
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;max-width:1120px;margin:0 auto;padding:0 16px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .logo{
+    width:32px;height:32px;border-radius:9px;
+    background:linear-gradient(135deg,var(--purple),var(--violet));
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .brand .logo svg{width:18px;height:18px;}
+  .brand .names{display:flex;flex-direction:column;line-height:1;}
+  .brand .names .top{font-family:var(--font-head);font-weight:800;font-size:16px;letter-spacing:-.4px;}
+  .brand .names .sub{font-family:var(--font-body);font-weight:600;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--purple);margin-top:3px;}
+  header.site nav.top-links{display:flex;align-items:center;gap:4px;}
+  header.site nav.top-links a.signin{font-weight:600;font-size:13px;color:var(--purple);padding:0 8px;height:44px;display:flex;align-items:center;}
+  header.site .menu-btn{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+  header.site .menu-btn:hover{background:var(--bg-lav);}
+  header.site .avatar{
+    width:32px;height:32px;border-radius:999px;background:var(--purple);
+    display:flex;align-items:center;justify-content:center;color:#fff;margin-left:2px;
+  }
+  header.site .avatar svg{width:14px;height:14px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;overflow:hidden;
+    text-align:center;padding:64px 16px 40px;
+  }
+  .hero .glow{
+    position:absolute;left:50%;top:-48px;transform:translateX(-50%);
+    width:420px;height:420px;border-radius:999px;filter:blur(48px);
+    background:linear-gradient(45deg, rgba(226,223,255,.5) 0%, rgba(234,221,255,.35) 50%, rgba(234,221,255,0) 100%);
+    pointer-events:none;
+  }
+  .hero .content{position:relative;z-index:1;}
+  .hero h1{
+    font-family:var(--font-head);font-weight:800;
+    font-size:clamp(30px,5vw,46px);line-height:1.18;letter-spacing:-.8px;
+    margin:20px auto 16px;max-width:640px;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(90deg,var(--purple) 0%,#4f46e5 50%,var(--violet) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    display:block;
+  }
+  .hero p.lead{
+    font-size:16px;line-height:1.6;color:var(--body);max-width:460px;margin:0 auto 28px;
+  }
+  .cta-stack{display:flex;flex-direction:column;gap:8px;max-width:360px;margin:0 auto;}
+  @media (min-width:560px){ .cta-stack{flex-direction:row;justify-content:center;max-width:none;} }
+  .btn{
+    font-family:var(--font-head);font-weight:600;font-size:16px;letter-spacing:-.1px;
+    border-radius:12px;padding:12px 24px;min-height:48px;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{
+    background:var(--purple);color:#fff;
+    box-shadow:0 10px 15px -3px rgba(53,37,205,.25),0 4px 6px -4px rgba(53,37,205,.25);
+  }
+  .btn-secondary{
+    background:#fff;color:var(--ink);
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+    border:1px solid #ece9ff;
+  }
+  .trust-line{
+    margin-top:18px;font-size:11px;font-weight:600;letter-spacing:.4px;color:rgba(70,69,85,.8);
+  }
+
+  /* ---------- DASHBOARD CARD ---------- */
+  .dash-wrap{padding:8px 16px 40px;}
+  .dash-card{
+    max-width:640px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;
+    box-shadow:0 20px 25px -5px rgba(53,37,205,.06),0 8px 10px -6px rgba(53,37,205,.06);
+    padding:20px;
+  }
+  .dash-card .accent-bar{height:4px;margin:-20px -20px 20px;background:linear-gradient(90deg,var(--purple) 0%,var(--violet) 50%,var(--mint) 100%);}
+  .dash-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .dash-head .who{display:flex;align-items:center;gap:12px;}
+  .dash-head .ava{
+    width:44px;height:44px;border-radius:999px;background:var(--bg-lav2);
+    display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;
+  }
+  .dash-head .ava span{font-family:var(--font-head);font-weight:800;color:var(--purple);font-size:15px;}
+  .dash-head .ava .dot{position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:999px;background:var(--mint);border:2px solid #fff;}
+  .dash-head h3{margin:0;font-family:var(--font-head);font-weight:800;font-size:16px;letter-spacing:-.2px;}
+  .dash-head .sub{font-size:13px;color:var(--body);margin-top:2px;}
+  .bell{width:36px;height:36px;border-radius:999px;background:var(--bg-lav);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;}
+  .bell .dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:999px;background:var(--violet);}
+  .bell svg{width:16px;height:16px;color:var(--purple);}
+
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+  .stat-card{background:var(--bg-lav);border-radius:12px;padding:12px;}
+  .stat-card .row{display:flex;align-items:center;justify-content:space-between;}
+  .stat-card .label{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--purple);}
+  .stat-card.gap .label{color:var(--violet);}
+  .stat-card.progress .label{color:#005338;}
+  .stat-card .val{font-family:var(--font-head);font-weight:800;font-size:20px;letter-spacing:-.2px;color:var(--purple);margin-top:10px;}
+  .stat-card.gap .val{color:var(--violet);}
+  .stat-card.progress .val{color:#005338;}
+  .stat-card .desc{font-size:11px;font-weight:600;color:var(--body);margin-top:2px;}
+  .stat-card .big{font-family:var(--font-head);font-weight:800;font-size:16px;margin-top:8px;}
+  .stat-card svg{width:15px;height:15px;color:#8a83e0;flex-shrink:0;}
+
+  .cap-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .cap-head .t{font-family:var(--font-head);font-weight:600;font-size:13px;}
+  .cap-head .a{font-size:11px;font-weight:500;color:var(--purple);}
+  .skill-row{background:rgba(241,243,255,.7);border-radius:8px;padding:10px;margin-bottom:8px;}
+  .skill-row .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .skill-row .name{font-family:var(--font-head);font-weight:600;font-size:13px;}
+  .skill-row .badge{font-size:11px;font-weight:700;letter-spacing:.3px;padding:2px 8px;border-radius:999px;}
+  .badge-strong{background:var(--mint);color:#005338;}
+  .badge-dev{background:var(--bg-lav2);color:var(--purple);}
+  .badge-gap{background:#e2e8fc;color:var(--body);}
+  .badge-beg{background:#eaddff;color:var(--violet);}
+  .track{background:var(--bg-lav3);height:6px;border-radius:999px;overflow:hidden;}
+  .fill{height:100%;border-radius:999px;}
+
+  .ai-rec{
+    margin-top:18px;border-radius:12px;padding:16px;
+    background:linear-gradient(158deg, rgba(226,223,255,.6) 0%, #f1f3ff 50%, rgba(234,221,255,.5) 100%);
+  }
+  .ai-rec .head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .ai-rec .head svg{width:17px;height:17px;color:var(--purple);}
+  .ai-rec .head b{font-family:var(--font-head);font-weight:800;font-size:13px;color:var(--purple);}
+  .ai-rec p{margin:0 0 10px;font-size:13px;color:var(--body);line-height:1.55;}
+  .ai-rec button{background:#fff;color:var(--purple);font-family:var(--font-head);font-weight:600;font-size:11px;letter-spacing:.4px;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:4px;}
+  .ai-rec button svg{width:9px;height:9px;}
+
+  /* ---------- GENERIC CARD SECTIONS ---------- */
+  .pill-cards{display:grid;gap:12px;max-width:720px;margin:0 auto;}
+  .pill-card{
+    display:flex;align-items:flex-start;gap:16px;background:#fff;border-radius:14px;padding:20px;
+    box-shadow:0 6px 20px rgba(53,37,205,.06);
+  }
+  .pill-card .ico{
+    width:40px;height:40px;border-radius:10px;background:var(--bg-lav2);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pill-card .ico svg{width:20px;height:20px;color:var(--purple);}
+  .pill-card h4{font-family:var(--font-head);font-weight:700;font-size:16px;margin:2px 0 6px;}
+  .pill-card p{margin:0;font-size:14px;color:var(--body);line-height:1.55;}
+
+  /* Problem section */
+  .problem-section{background:#fff;}
+  .problem-inner{max-width:760px;margin:0 auto;background:var(--white);border-radius:20px;padding:32px 24px;box-shadow:0 6px 24px rgba(53,37,205,.05);}
+  .problem-cards{display:grid;gap:14px;margin-top:28px;}
+  .problem-card{display:flex;gap:16px;background:var(--bg-lav);border-radius:14px;padding:18px;}
+  .problem-card .ico{width:36px;height:36px;border-radius:10px;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  .problem-card .ico svg{width:18px;height:18px;color:var(--purple);}
+  .problem-card h4{margin:0 0 6px;font-family:var(--font-head);font-weight:700;font-size:15px;}
+  .problem-card p{margin:0;font-size:13.5px;color:var(--body);line-height:1.55;}
+
+  /* Timeline */
+  .timeline{max-width:640px;margin:44px auto 0;position:relative;padding-left:56px;}
+  .timeline::before{content:"";position:absolute;left:19px;top:0;bottom:20px;width:2px;background:var(--bg-lav2);}
+  .tl-step{position:relative;margin-bottom:24px;}
+  .tl-step .num{
+    position:absolute;left:-56px;top:0;width:40px;height:40px;border-radius:999px;
+    background:var(--purple);color:#fff;font-family:var(--font-head);font-weight:800;font-size:16px;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(53,37,205,.3);
+  }
+  .tl-step .body{background:#fff;border-radius:14px;padding:18px;box-shadow:0 4px 16px rgba(53,37,205,.06);}
+  .tl-step .tag{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--purple);letter-spacing:.3px;margin-bottom:8px;}
+  .tl-step .tag svg{width:14px;height:14px;}
+  .tl-step h4{margin:0 0 6px;font-family:var(--font-head);font-weight:700;font-size:17px;}
+  .tl-step p{margin:0;font-size:14px;color:var(--body);line-height:1.55;}
+
+  /* Feature cards */
+  .feature-grid{display:grid;gap:14px;max-width:800px;margin:0 auto;}
+  @media (min-width:700px){ .feature-grid{grid-template-columns:1fr 1fr;} }
+  .feature-card{background:#fff;border-radius:14px;padding:18px;display:flex;gap:16px;box-shadow:0 4px 16px rgba(53,37,205,.05);}
+  .feature-card .ico{width:44px;height:44px;border-radius:12px;background:var(--bg-lav2);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .feature-card .ico svg{width:20px;height:20px;color:var(--purple);}
+  .feature-card h4{margin:0 0 6px;font-family:var(--font-head);font-weight:700;font-size:15.5px;}
+  .feature-card p{margin:0;font-size:13.5px;color:var(--body);line-height:1.5;}
+
+  /* Skill visualizer */
+  .visualizer-section{background:#fff;}
+  .visualizer-card{
+    max-width:720px;margin:0 auto;border-radius:20px;
+    background:linear-gradient(180deg,#fbfbff 0%,#fff 100%);
+    box-shadow:0 10px 30px rgba(53,37,205,.08);padding:28px 22px;
+  }
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .chip{
+    font-family:var(--font-head);font-weight:600;font-size:13.5px;padding:6px 14px;border-radius:999px;
+    background:var(--bg-lav);color:var(--ink);display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;
+  }
+  .chip.active{background:var(--purple);color:#fff;}
+  .chip svg{width:11px;height:8px;}
+  .compare-label{font-size:11px;font-weight:700;letter-spacing:.4px;color:var(--purple);text-transform:uppercase;margin-bottom:8px;display:block;}
+  .compare-list{margin-top:20px;border-radius:14px;overflow:hidden;border:1px solid var(--bg-lav3);}
+  .compare-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--bg-lav3);flex-wrap:wrap;}
+  .compare-row:last-child{border-bottom:none;}
+  .compare-row .skill-name{font-family:var(--font-head);font-weight:700;font-size:14px;}
+  .compare-row .skill-cat{font-size:12px;color:var(--body);}
+  .compare-vals{display:flex;align-items:center;gap:10px;}
+  .compare-vals .col{text-align:center;}
+  .compare-vals .colval{font-family:var(--font-head);font-weight:700;font-size:13px;}
+  .compare-vals .collbl{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-top:2px;display:inline-block;}
+  .lbl-you{background:var(--bg-lav2);color:var(--purple);}
+  .lbl-req{background:#e9edff;color:var(--body);}
+  .lbl-gap{background:#fde3d8;color:#b3541e;}
+  .ai-summary{margin-top:24px;border-radius:14px;padding:20px;background:linear-gradient(135deg,var(--bg-lav2) 0%,var(--bg-lav) 100%);}
+  .ai-summary .head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .ai-summary .head svg{width:16px;height:16px;color:var(--purple);}
+  .ai-summary .head b{font-family:var(--font-head);font-weight:800;font-size:15px;}
+  .ai-summary p{margin:0 0 16px;font-size:13.5px;color:var(--body);line-height:1.6;}
+  .ai-summary button{width:100%;background:var(--purple);color:#fff;font-family:var(--font-head);font-weight:600;font-size:14px;padding:12px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+  /* Roadmap phases */
+  .roadmap-badge{display:block;margin:0 auto 16px;width:fit-content;background:var(--bg-lav);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--purple);}
+  .phase-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+  .phase-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 16px rgba(53,37,205,.05);}
+  .phase-card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .phase-card .phase-num{font-size:12px;font-weight:700;color:var(--body);letter-spacing:.3px;text-transform:uppercase;}
+  .phase-card .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 12px;border-radius:999px;}
+  .status-active{background:var(--bg-lav2);color:var(--purple);}
+  .status-active .dotb{width:6px;height:6px;border-radius:999px;background:var(--purple);}
+  .status-upcoming{background:var(--bg-lav);color:var(--body);}
+  .phase-card h4{margin:0 0 8px;font-family:var(--font-head);font-weight:700;font-size:17px;}
+  .phase-card p{margin:0 0 14px;font-size:13.5px;color:var(--body);line-height:1.55;}
+  .phase-card .meta{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;color:var(--body);margin-bottom:8px;}
+  .phase-card .bar{height:6px;border-radius:999px;background:var(--bg-lav3);overflow:hidden;}
+  .phase-card .bar span{display:block;height:100%;background:var(--purple);border-radius:999px;}
+  .roadmap-cta{max-width:400px;margin:32px auto 0;}
+
+  /* Career cards */
+  .career-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+  .career-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 16px rgba(53,37,205,.05);}
+  .career-card .top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+  .career-card .left{display:flex;align-items:center;gap:10px;}
+  .career-card .ico{width:32px;height:32px;border-radius:9px;background:var(--bg-lav2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .career-card .ico svg{width:16px;height:16px;color:var(--purple);}
+  .career-card h4{margin:0;font-family:var(--font-head);font-weight:700;font-size:16px;}
+  .career-card .overlay{font-size:12px;font-weight:700;background:var(--bg-lav);color:var(--purple);padding:4px 10px;border-radius:999px;}
+  .career-card p.desc{font-size:13.5px;color:var(--body);line-height:1.55;margin:0 0 14px;}
+  .career-card .tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .career-card .tag{font-size:12px;font-weight:600;background:var(--bg-lav);border-radius:999px;padding:4px 12px;color:var(--ink);}
+  .career-cta{max-width:400px;margin:28px auto 0;}
+
+  /* Benefits (dark) */
+  .benefits-wrap{background:linear-gradient(160deg,#0b1220 0%,#151238 100%);border-radius:24px;max-width:1000px;margin:0 auto;padding:48px 24px;}
+  .benefits-wrap .eyebrow{background:rgba(255,255,255,.1);color:#fff;}
+  .benefits-wrap h2.section-title, .benefits-wrap p.section-sub{color:#fff;}
+  .benefits-wrap p.section-sub{color:rgba(255,255,255,.7);}
+  .benefit-grid{display:grid;gap:14px;max-width:760px;margin:0 auto;}
+  @media (min-width:700px){ .benefit-grid{grid-template-columns:1fr 1fr;} }
+  .benefit-card{display:flex;gap:16px;padding:18px 4px;}
+  .benefit-card .ico{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .benefit-card .ico svg{width:19px;height:19px;color:var(--mint);}
+  .benefit-card h4{margin:0 0 6px;font-family:var(--font-head);font-weight:700;font-size:15.5px;color:#fff;}
+  .benefit-card p{margin:0;font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.55;}
+
+  /* Final CTA / Form */
+  .final-cta{position:relative;overflow:hidden;border-radius:24px;max-width:720px;margin:0 auto;padding:48px 24px;text-align:center;color:#fff;
+    background:linear-gradient(135deg,#0b1220 0%,var(--purple) 50%,var(--violet) 100%);
+    box-shadow:0 25px 40px -10px rgba(0,0,0,.25);
+  }
+  .final-cta .glow{position:absolute;right:-40px;bottom:-40px;width:200px;height:200px;border-radius:999px;background:rgba(138,76,252,.35);filter:blur(24px);}
+  .final-cta .content{position:relative;z-index:1;}
+  .final-cta .iconwrap{width:52px;height:52px;border-radius:999px;background:rgba(255,255,255,.1);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+  .final-cta .iconwrap svg{width:26px;height:26px;color:#fff;}
+  .final-cta h2{font-family:var(--font-head);font-weight:800;font-size:28px;line-height:1.25;margin:0 0 12px;letter-spacing:-.4px;}
+  .final-cta p.lead{font-size:15px;color:rgba(255,255,255,.85);max-width:400px;margin:0 auto 28px;line-height:1.6;}
+  .lead-form{max-width:400px;margin:0 auto;text-align:left;display:flex;flex-direction:column;gap:12px;}
+  .lead-form label{font-size:12px;font-weight:700;letter-spacing:.3px;color:rgba(255,255,255,.85);margin-bottom:6px;display:block;}
+  .lead-form input{
+    width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.08);color:#fff;font-family:var(--font-body);font-size:14px;
+  }
+  .lead-form input::placeholder{color:rgba(255,255,255,.45);}
+  .lead-form input:focus{outline:none;border-color:var(--mint);background:rgba(255,255,255,.14);}
+  .lead-form button{
+    margin-top:4px;background:#fff;color:var(--purple);font-family:var(--font-head);font-weight:700;font-size:16px;
+    padding:14px;border-radius:12px;width:100%;transition:transform .15s ease;
+  }
+  .lead-form button:hover{transform:translateY(-1px);}
+  .lead-form button:disabled{opacity:.6;cursor:default;transform:none;}
+  .form-msg{font-size:13px;font-weight:600;text-align:center;min-height:18px;margin-top:4px;}
+  .form-msg.success{color:var(--mint);}
+  .form-msg.error{color:#ffb4a2;}
+  .final-note{margin-top:16px;font-size:11px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.6);}
+
+  /* Footer */
+  footer.site{padding:56px 0 96px;background:#fff;border-top:1px solid var(--bg-lav3);}
+  footer.site .top{display:flex;flex-direction:column;gap:28px;}
+  @media (min-width:700px){ footer.site .top{flex-direction:row;justify-content:space-between;} }
+  footer.site .brand{margin-bottom:14px;}
+  footer.site .tagline{max-width:340px;font-size:13.5px;color:var(--body);line-height:1.6;}
+  .foot-cols{display:flex;gap:60px;}
+  .foot-col h5{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--body);margin:0 0 14px;}
+  .foot-col a{display:block;font-size:14px;color:var(--ink);margin-bottom:12px;}
+  .foot-col a:hover{color:var(--purple);}
+  .foot-bottom{margin-top:36px;padding-top:20px;border-top:1px solid var(--bg-lav3);display:flex;flex-direction:column-reverse;gap:16px;align-items:center;}
+  @media (min-width:700px){ .foot-bottom{flex-direction:row;justify-content:space-between;} }
+  .socials{display:flex;gap:8px;}
+  .socials a{width:36px;height:36px;border-radius:999px;background:var(--bg-lav);display:flex;align-items:center;justify-content:center;}
+  .socials a svg{width:15px;height:15px;color:var(--purple);}
+  .foot-bottom .copy{font-size:12.5px;color:var(--body);}
+
+  /* Mobile bottom nav */
+  nav.bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:50;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
+    border-top:1px solid var(--bg-lav3);
+    display:flex;justify-content:space-around;padding:8px 0;
+  }
+  nav.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--body);padding:4px 8px;}
+  nav.bottom-nav a svg{width:19px;height:19px;}
+  nav.bottom-nav a.active{color:var(--purple);}
+  @media (min-width:900px){ nav.bottom-nav{display:none;} }
+  @media (max-width:899px){ body{padding-bottom:72px;} }
+
+  @media (min-width:640px){
+    .stat-grid{grid-template-columns:repeat(4,1fr);}
+    .pill-cards{grid-template-columns:1fr 1fr 1fr;}
+    .problem-cards{grid-template-columns:1fr 1fr 1fr;}
+    .career-list{grid-template-columns:1fr 1fr;display:grid;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site">
+  <div class="inner">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 8V16M8 10V14M16 10V14" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="names">
+        <span class="top">NEXORA</span>
+        <span class="sub">AI Skill Gap Finder</span>
+      </div>
+    </div>
+    <nav class="top-links">
+      <a href="#" class="signin">Sign In</a>
+      <button class="menu-btn" aria-label="Menu">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><path d="M1 1H17M1 6H17M1 11H17" stroke="#151b2a" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <div class="avatar">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="white" stroke-width="1.6"/><path d="M5 20c1.5-4 4.5-6 7-6s5.5 2 7 6" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="glow"></div>
+    <div class="content wrap">
+      <span class="eyebrow">AI-Powered Career Development</span>
+      <h1>Discover Your Skill Gaps.<span class="grad">Build Your Future.</span></h1>
+      <p class="lead">Identify the skills you need, discover your career path, and follow a personalized learning roadmap powered by AI.</p>
+      <div class="cta-stack">
+        <a href="#form" class="btn btn-primary">Find My Skill Gaps
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M13 6L19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#how-it-works" class="btn btn-secondary">Explore How It Works
+          <svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke="#151b2a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <p class="trust-line">Designed to help students learn smarter and prepare for future opportunities.</p>
+    </div>
+  </section>
+
+  <!-- ================= DASHBOARD PREVIEW ================= -->
+  <section class="dash-wrap">
+    <div class="dash-card">
+      <div class="accent-bar"></div>
+      <div class="dash-head">
+        <div class="who">
+          <div class="ava"><span>GS</span><span class="dot"></span></div>
+          <div>
+            <h3>Good morning, Student</h3>
+            <div class="sub">Your career journey starts here</div>
+          </div>
+        </div>
+        <div class="bell">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C9 3 7 5.5 7 8.5V12L5 16H19L17 12V8.5C17 5.5 15 3 12 3Z" stroke="#3525cd" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 19a2 2 0 004 0" stroke="#3525cd" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span class="dot"></span>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="row"><span class="label">Goal</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="#8a83e0" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="8" stroke="#8a83e0" stroke-width="1.6"/></svg>
+          </div>
+          <div class="big">AI/ML Eng.</div>
+          <div class="desc">Selected pathway</div>
+        </div>
+        <div class="stat-card">
+          <div class="row"><span class="label">Match</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="#8a83e0" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="val">68%</div>
+          <div class="desc">Demo match rate</div>
+        </div>
+        <div class="stat-card gap">
+          <div class="row"><span class="label">Gaps</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="#8a83e0" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#8a83e0" stroke-width="1.6"/></svg>
+          </div>
+          <div class="val">06</div>
+          <div class="desc">Identified areas</div>
+        </div>
+        <div class="stat-card progress">
+          <div class="row"><span class="label">Progress</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 17L9 11L13 15L21 7" stroke="#8a83e0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="val">42%</div>
+          <div class="desc">2 Modules done</div>
+        </div>
+      </div>
+
+      <div class="cap-head">
+        <span class="t">Capability Breakdown</span>
+        <span class="a">Auto-calibrated</span>
+      </div>
+
+      <div class="skill-row">
+        <div class="top"><span class="name">Python Programming</span><span class="badge badge-strong">Strong</span></div>
+        <div class="track"><span class="fill" style="width:85%;background:#4edea3;"></span></div>
+      </div>
+      <div class="skill-row">
+        <div class="top"><span class="name">Database &amp; SQL</span><span class="badge badge-dev">Developing</span></div>
+        <div class="track"><span class="fill" style="width:60%;background:#3525cd;"></span></div>
+      </div>
+      <div class="skill-row">
+        <div class="top"><span class="name">Applied Statistics</span><span class="badge badge-gap">Gap Identified</span></div>
+        <div class="track"><span class="fill" style="width:35%;background:#8a4cfc;"></span></div>
+      </div>
+      <div class="skill-row">
+        <div class="top"><span class="name">Machine Learning Core</span><span class="badge badge-beg">Beginner</span></div>
+        <div class="track"><span class="fill" style="width:25%;background:#712ae2;"></span></div>
+      </div>
+
+      <div class="ai-rec">
+        <div class="head">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L14 8L20 10L14 12L12 18L10 12L4 10L10 8L12 2Z" stroke="#3525cd" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          <b>Your Next Best Step</b>
+        </div>
+        <p>Strengthen your statistics foundation before beginning machine learning projects.</p>
+        <button>View Learning Path
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M13 6L19 12L13 18" stroke="#3525cd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VALUE PROPS ================= -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow" style="display:block;width:fit-content;">Why Nexora</span>
+      <h2 class="section-title">One platform for skills, gaps, and growth</h2>
+      <p class="section-sub">Everything you need to understand where you stand and what to learn next — backed by real industry data.</p>
+      <div class="pill-cards">
+        <div class="pill-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h4>Instant Skill Assessment</h4><p>A quick, adaptive evaluation maps your current technical, analytical, and soft skills in minutes — no guesswork required.</p></div>
+        </div>
+        <div class="pill-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l4-5 3 3 5-7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h4>Live Industry Benchmarking</h4><p>Compare your profile against real, continuously-updated benchmarks for your specific target role.</p></div>
+        </div>
+        <div class="pill-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div><h4>AI-Sequenced Learning Path</h4><p>Get a prioritized, step-by-step roadmap that closes your biggest gaps first — built around prerequisites and impact.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROBLEM SECTION ================= -->
+  <section class="problem-section">
+    <div class="wrap">
+      <div class="problem-inner">
+        <span class="eyebrow" style="display:block;width:fit-content;margin-bottom:12px;">Problem</span>
+        <h2 class="section-title" style="text-align:left;margin:0 0 12px;max-width:none;">Not Sure What Skills Your Dream Career Requires?</h2>
+        <p class="section-sub" style="text-align:left;margin:0;max-width:none;">Students often struggle to understand which skills they already have, which skills they are missing, and where to begin learning. Nexora brings these answers together in one place.</p>
+
+        <div class="problem-cards">
+          <div class="problem-card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#3525cd" stroke-width="1.6"/></svg></div>
+            <div><h4>No Clear Picture of Current Skills</h4><p>Without a structured assessment, it's hard to know objectively where your strengths and weaknesses really lie.</p></div>
+          </div>
+          <div class="problem-card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 14l3-4 3 2 5-6" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><h4>Disconnected From Real Job Requirements</h4><p>Course catalogs rarely map cleanly to what employers actually expect for a given role today.</p></div>
+          </div>
+          <div class="problem-card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 15l4-4 3 3 6-7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><h4>No Clear Starting Point</h4><p>Faced with endless resources, students don't know which skill to prioritize learning first.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section id="how-it-works">
+    <div class="wrap">
+      <span class="eyebrow" style="display:block;width:fit-content;">How It Works</span>
+      <h2 class="section-title">From Assessment to Career Clarity in Four Steps</h2>
+      <p class="section-sub">A simple, guided process that turns uncertainty into a concrete learning plan.</p>
+
+      <div class="timeline">
+        <div class="tl-step">
+          <div class="num">1</div>
+          <div class="body">
+            <div class="tag"><svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>ASSESS</div>
+            <h4>Assess Your Skills</h4>
+            <p>Complete an interactive evaluation to understand your current technical, analytical, and soft competencies.</p>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="num">2</div>
+          <div class="body">
+            <div class="tag"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 14l3-4 3 3 5-6" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>COMPARE</div>
+            <h4>Identify Skill Gaps</h4>
+            <p>Compare your profile directly with live industry benchmarks for your specific target role.</p>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="num">3</div>
+          <div class="body">
+            <div class="tag"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 15l4-4 3 3 6-7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>PLAN</div>
+            <h4>Get Your Roadmap</h4>
+            <p>Receive an algorithmic, sequenced learning path prioritized by impact and skill prerequisites.</p>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="num">4</div>
+          <div class="body">
+            <div class="tag"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17l6-6 4 4 8-8" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>GROW</div>
+            <h4>Track Your Growth</h4>
+            <p>Log projects, take periodic validation checkpoints, and continuously boost your readiness score.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FEATURES ================= -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow" style="display:block;width:fit-content;">Features</span>
+      <h2 class="section-title">Everything You Need to Close the Gap</h2>
+      <p class="section-sub">Purpose-built tools that turn scattered learning into a focused, measurable plan.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h4>Skill Assessment</h4><p>Adaptive quizzes and project checks calibrate your true skill level across dozens of competencies.</p></div>
+        </div>
+        <div class="feature-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l4-5 3 3 5-7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h4>Gap Analysis</h4><p>See exactly which skills separate you from your target role, ranked by priority.</p></div>
+        </div>
+        <div class="feature-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="#3525cd" stroke-width="1.8"/><path d="M4 21c1.8-4.5 5.3-7 8-7s6.2 2.5 8 7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div><h4>Career Matching</h4><p>Discover roles that fit your current strengths and interests, with real market context.</p></div>
+        </div>
+        <div class="feature-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 15l4-4 3 3 6-7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h4>Learning Roadmap</h4><p>A sequenced plan that respects prerequisites so nothing feels out of order.</p></div>
+        </div>
+        <div class="feature-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17L9 11L13 15L21 7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><h4>Progress Tracking</h4><p>Checkpoints and readiness scores keep momentum visible week over week.</p></div>
+        </div>
+        <div class="feature-card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="#3525cd" stroke-width="1.6"/><path d="M8 16v-4M12 16V8M16 16v-6" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div><h4>Industry Benchmarks</h4><p>Live data on what employers are actually hiring for right now, not last year.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SKILL VISUALIZER ================= -->
+  <section class="visualizer-section">
+    <div class="wrap">
+      <span class="eyebrow" style="display:block;width:fit-content;">Skill Gap Visualizer</span>
+      <h2 class="section-title">See Exactly Where You Need to Grow</h2>
+      <p class="section-sub">Nexora helps you visualize the difference between your current abilities and market demands.</p>
+
+      <div class="visualizer-card">
+        <span class="compare-label">Target Career Profile</span>
+        <div class="chip-row">
+          <span class="chip active">AI/ML Engineer
+            <svg viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="chip">Data Analyst</span>
+          <span class="chip">Full-Stack Developer</span>
+          <span class="chip">Cloud Engineer</span>
+        </div>
+
+        <div class="compare-list">
+          <div class="compare-row">
+            <div><div class="skill-name">Python</div><div class="skill-cat">Programming</div></div>
+            <div class="compare-vals">
+              <div class="col"><div class="colval">85%</div><span class="collbl lbl-you">You</span></div>
+              <svg width="13" height="6" viewBox="0 0 13 6" fill="none"><path d="M1 3H12M8 1L12 3L8 5" stroke="#8a83e0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="col"><div class="colval">90%</div><span class="collbl lbl-req">Required</span></div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div><div class="skill-name">Statistics</div><div class="skill-cat">Analytics</div></div>
+            <div class="compare-vals">
+              <div class="col"><div class="colval">35%</div><span class="collbl lbl-gap">Gap</span></div>
+              <svg width="13" height="6" viewBox="0 0 13 6" fill="none"><path d="M1 3H12M8 1L12 3L8 5" stroke="#8a83e0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="col"><div class="colval">80%</div><span class="collbl lbl-req">Required</span></div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div><div class="skill-name">Machine Learning</div><div class="skill-cat">Core Discipline</div></div>
+            <div class="compare-vals">
+              <div class="col"><div class="colval">25%</div><span class="collbl lbl-gap">Gap</span></div>
+              <svg width="13" height="6" viewBox="0 0 13 6" fill="none"><path d="M1 3H12M8 1L12 3L8 5" stroke="#8a83e0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="col"><div class="colval">85%</div><span class="collbl lbl-req">Required</span></div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div><div class="skill-name">SQL</div><div class="skill-cat">Databases</div></div>
+            <div class="compare-vals">
+              <div class="col"><div class="colval">60%</div><span class="collbl lbl-you">You</span></div>
+              <svg width="13" height="6" viewBox="0 0 13 6" fill="none"><path d="M1 3H12M8 1L12 3L8 5" stroke="#8a83e0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="col"><div class="colval">70%</div><span class="collbl lbl-req">Required</span></div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div><div class="skill-name">Git/GitHub</div><div class="skill-cat">Tooling</div></div>
+            <div class="compare-vals">
+              <div class="col"><div class="colval">70%</div><span class="collbl lbl-you">You</span></div>
+              <svg width="13" height="6" viewBox="0 0 13 6" fill="none"><path d="M1 3H12M8 1L12 3L8 5" stroke="#8a83e0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="col"><div class="colval">65%</div><span class="collbl lbl-req">Required</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-summary">
+          <div class="head">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L14 8L20 10L14 12L12 18L10 12L4 10L10 8L12 2Z" stroke="#3525cd" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            <b>AI Analysis Summary</b>
+          </div>
+          <p>You're closest to job-ready on Python and Git — but statistics and core machine learning concepts need focused attention over the next few weeks.</p>
+          <button>View Full Skill Report
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M13 6L19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ROADMAP ================= -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow" style="display:block;width:fit-content;">Your Learning Journey</span>
+      <h2 class="section-title">A Five-Phase Roadmap Built Around You</h2>
+      <p class="section-sub">Every phase unlocks the next once its prerequisites are met — no wasted effort, no guesswork.</p>
+      <span class="roadmap-badge">Est. 12–16 weeks total</span>
+
+      <div class="phase-list">
+        <div class="phase-card">
+          <div class="top">
+            <span class="phase-num">Phase 1</span>
+            <span class="status status-active"><span class="dotb"></span>In Progress</span>
+          </div>
+          <h4>Foundations &amp; Skill Assessment</h4>
+          <p>Complete your baseline evaluation and confirm your target career pathway.</p>
+          <div class="meta"><span>3 Modules</span><span>~2 weeks</span></div>
+          <div class="bar"><span style="width:75%;"></span></div>
+        </div>
+        <div class="phase-card">
+          <div class="top">
+            <span class="phase-num">Phase 2</span>
+            <span class="status status-upcoming">Upcoming</span>
+          </div>
+          <h4>Core Technical Skill Building</h4>
+          <p>Work through targeted modules for the highest-priority gaps identified in your assessment.</p>
+          <div class="meta"><span>5 Modules</span><span>~4 weeks</span></div>
+        </div>
+        <div class="phase-card">
+          <div class="top">
+            <span class="phase-num">Phase 3</span>
+            <span class="status status-upcoming">Upcoming</span>
+          </div>
+          <h4>Applied Statistics &amp; Data Reasoning</h4>
+          <p>Strengthen the analytical foundation every AI/ML role expects from day one.</p>
+          <div class="meta"><span>4 Modules</span><span>~3 weeks</span></div>
+        </div>
+        <div class="phase-card">
+          <div class="top">
+            <span class="phase-num">Phase 4</span>
+            <span class="status status-upcoming">Upcoming</span>
+          </div>
+          <h4>Hands-On Machine Learning Projects</h4>
+          <p>Apply everything you've learned to real, portfolio-ready projects with guided checkpoints.</p>
+          <div class="meta"><span>4 Modules</span><span>~4 weeks</span></div>
+        </div>
+        <div class="phase-card">
+          <div class="top">
+            <span class="phase-num">Phase 5</span>
+            <span class="status status-upcoming">Upcoming</span>
+          </div>
+          <h4>Career Readiness &amp; Final Review</h4>
+          <p>Polish your portfolio, validate your readiness score, and prepare for interviews.</p>
+          <div class="meta"><span>3 Modules</span><span>~2 weeks</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-cta">
+        <a href="#form" class="btn btn-primary" style="width:100%;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 15l4-4 3 3 6-7" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          View Full Learning Roadmap
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CAREER PATHS ================= -->
+  <section>
+    <div class="wrap">
+      <span class="eyebrow" style="display:block;width:fit-content;">Career Paths</span>
+      <h2 class="section-title">Popular Careers Nexora Students Pursue</h2>
+      <p class="section-sub">Explore what each path actually involves — and how your current skills stack up.</p>
+
+      <div class="career-list">
+        <div class="career-card">
+          <div class="top">
+            <div class="left">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v3M12 18v3M5 12H2M22 12h-3" stroke="#3525cd" stroke-width="1.6" stroke-linecap="round"/><rect x="6" y="6" width="12" height="12" rx="3" stroke="#3525cd" stroke-width="1.6"/></svg></div>
+              <h4>AI/ML Engineer</h4>
+            </div>
+            <span class="overlay">High Demand</span>
+          </div>
+          <p class="desc">Designs, builds, and deploys intelligent models and algorithms to automate analytical tasks.</p>
+          <div class="tags"><span class="tag">$120k+ avg</span><span class="tag">Python, ML</span><span class="tag">68% match</span></div>
+        </div>
+
+        <div class="career-card">
+          <div class="top">
+            <div class="left">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V9M11 19V5M18 19v-7" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+              <h4>Data Analyst</h4>
+            </div>
+            <span class="overlay">Entry Friendly</span>
+          </div>
+          <p class="desc">Extracts business insights from structured datasets through visual analytics and reporting.</p>
+          <div class="tags"><span class="tag">$85k avg</span><span class="tag">SQL, Stats</span><span class="tag">74% match</span></div>
+        </div>
+
+        <div class="career-card">
+          <div class="top">
+            <div class="left">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M8 4L2 12l6 8M16 4l6 8-6 8" stroke="#3525cd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <h4>Full-Stack Developer</h4>
+            </div>
+            <span class="overlay">Trending</span>
+          </div>
+          <p class="desc">Engineers robust web applications, systems, and APIs using modern scalable frameworks.</p>
+          <div class="tags"><span class="tag">$105k avg</span><span class="tag">JS, APIs</span><span class="tag">55% match</span></div>
+        </div>
+
+        <div class="career-card">
+          <div class="top">
+            <div class="left">
+              <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M7 17a4 4 0 010-8 5 5 0 019.6-1.5A4.5 4.5 0 0117 17H7z" stroke="#3525cd" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+              <h4>Cloud Engineer</h4>
+            </div>
+            <span class="overlay">High Demand</span>
+          </div>
+          <p class="desc">Architects scalable distributed infrastructure and reliable serverless backend ecosystems.</p>
+          <div class="tags"><span class="tag">$130k avg</span><span class="tag">AWS, DevOps</span><span class="tag">40% match</span></div>
+        </div>
+      </div>
+
+      <div class="career-cta">
+        <a href="#" class="btn btn-secondary" style="width:100%;">Explore All Career Paths
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M13 6L19 12L13 18" stroke="#151b2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BENEFITS (DARK) ================= -->
+  <section>
+    <div class="wrap">
+      <div class="benefits-wrap">
+        <span class="eyebrow" style="display:block;width:fit-content;">Why Students Choose Us</span>
+        <h2 class="section-title">Built to Keep You Moving Forward</h2>
+        <p class="section-sub">The details that make learning feel guided instead of overwhelming.</p>
+
+        <div class="benefit-grid">
+          <div class="benefit-card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L20 6V12C20 17 16.5 20.5 12 22C7.5 20.5 4 17 4 12V6L12 2Z" stroke="#6ffbbe" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#6ffbbe" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><h4>Data-Driven Accuracy</h4><p>Every recommendation is grounded in real benchmark data, not guesswork or generic advice.</p></div>
+          </div>
+          <div class="benefit-card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12l4-4 4 4 6-6 4 4" stroke="#6ffbbe" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><h4>Real-Time Benchmarking</h4><p>Industry requirements shift fast — Nexora's data updates continuously to keep pace.</p></div>
+          </div>
+          <div class="benefit-card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M4 8h16M4 16h16" stroke="#6ffbbe" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+            <div><h4>Free to Start</h4><p>Your first skill assessment and roadmap preview are completely free — no card required.</p></div>
+          </div>
+          <div class="benefit-card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#6ffbbe" stroke-width="1.6"/><circle cx="17" cy="10" r="2.4" stroke="#6ffbbe" stroke-width="1.6"/><path d="M3 20c1.2-3.4 3.6-5 6-5s4.8 1.6 6 5" stroke="#6ffbbe" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+            <div><h4>Community Support</h4><p>Join thousands of learners sharing progress, projects, and advice on the same journey.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA / LEAD FORM ================= -->
+  <section id="form">
+    <div class="wrap">
+      <div class="final-cta">
+        <div class="glow"></div>
+        <div class="content">
+          <div class="iconwrap">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L14 8L20 10L14 12L12 18L10 12L4 10L10 8L12 2Z" stroke="white" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          </div>
+          <h2>Your Career Goals Deserve a Clear Plan.</h2>
+          <p class="lead">Start understanding your skill gaps and explore a personalized learning journey with Nexora.</p>
+
+          <form class="lead-form" id="leadForm">
+            <div>
+              <label for="name">Full name</label>
+              <input type="text" id="name" name="name" placeholder="Jordan Lee" required />
+            </div>
+            <div>
+              <label for="email">Email address</label>
+              <input type="email" id="email" name="email" placeholder="jordan@email.com" required />
+            </div>
+            <div>
+              <label for="phone">Phone number</label>
+              <input type="tel" id="phone" name="phone" placeholder="+1 555 123 4567" required />
+            </div>
+            <button type="submit" id="submitBtn">Get Started Free</button>
+            <div class="form-msg" id="formMsg"></div>
+          </form>
+
+          <p class="final-note">No credit card required • Instant skill assessment</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="brand">
+          <div class="logo">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 8V16M8 10V14M16 10V14" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <span class="top" style="font-family:var(--font-head);font-weight:800;font-size:16px;">NEXORA</span>
+        </div>
+        <p class="tagline">Empowering talent with precision machine-learning insights, real-time industry benchmark tracking, and predictive upskilling pathways.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h5>Product</h5>
+          <a href="#">Skill Matrix</a>
+          <a href="#">AI Benchmarking</a>
+          <a href="#">Career Pathways</a>
+        </div>
+        <div class="foot-col">
+          <h5>Company</h5>
+          <a href="#">About Nexora</a>
+          <a href="#">Security &amp; Trust</a>
+          <a href="#">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div class="socials">
+        <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#3525cd" stroke-width="1.6"/><path d="M8 10v7M8 7v.01M12 17v-4.5a2 2 0 014 0V17M12 17v-7" stroke="#3525cd" stroke-width="1.6" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12a10 10 0 006.84 9.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 015 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0022 12c0-5.5-4.5-10-10-10z" fill="#3525cd"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="#3525cd" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="#3525cd" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1" fill="#3525cd"/></svg></a>
+      </div>
+      <div class="copy">© 2026 Nexora Inc. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= MOBILE BOTTOM NAV ================= -->
+<nav class="bottom-nav">
+  <a href="#" class="active">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M3 11l9-7 9 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Home
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/></svg>
+    Dashboard
+  </a>
+  <a href="#how-it-works">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M4 15l4-4 3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Roadmap
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.5-4 4.5-6 7-6s5.5 2 7 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    Careers
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 21c1.6-4.6 4.8-7 8-7s6.4 2.4 8 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    Profile
+  </a>
+</nav>
+
+<script>
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbya8wVjvA_7nP-wOP1-xOGDYGZQ-0Jtaq_OZDTaUSW8i9DBK7FkaPTidOT_QVmiDPFaCQ/exec";
+
+  var form = document.getElementById('leadForm');
+  var submitBtn = document.getElementById('submitBtn');
+  var formMsg = document.getElementById('formMsg');
+
+  function showSuccess() {
+    formMsg.textContent = "Thanks! We've received your details — check your email shortly.";
+    formMsg.className = "form-msg success";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Get Started Free";
+    form.reset();
+  }
+
+  function showError() {
+    formMsg.textContent = "Something went wrong. Please try again.";
+    formMsg.className = "form-msg error";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Get Started Free";
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var name = document.getElementById('name').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+
+    if (!name || !email || !phone) {
+      formMsg.textContent = "Please fill in all fields.";
+      formMsg.className = "form-msg error";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    formMsg.textContent = "";
+    formMsg.className = "form-msg";
+
+    var url = SCRIPT_URL + "?" + new URLSearchParams({ name: name, email: email, phone: phone });
+
+    fetch(url, { method: "GET", mode: "no-cors" })
+      .then(function () { showSuccess(); })
+      .catch(function () { showError(); });
+  });
+</script>
+
+</body>
+</html>
